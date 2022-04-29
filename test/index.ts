@@ -8,13 +8,13 @@ envSuite('should be a function', () => {
   assert.type(useEnv, 'function');
 });
 
-envSuite('should default to env when no input given', async () => {
-  await useEnv('env', { debug: true });
+envSuite('should default to env when no input given', () => {
+  useEnv('env', { debug: true });
   assert.is(process.env.DEFAULT, 'working in default options mode');
 });
 
-envSuite('should make test folder & load env', async () => {
-  await useEnv('test');
+envSuite('should make test folder & load env', () => {
+  useEnv('test');
   assert.is(process.env.TEST1, 'one');
   assert.is(process.env.TEST2, 'two');
 });

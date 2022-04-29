@@ -1,3 +1,5 @@
 import useEnv from '../src/index';
 
-useEnv();
+useEnv('test', { debug: true });
+
+console.log(process.env.TEST1);
