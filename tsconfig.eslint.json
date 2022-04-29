@@ -1,4 +1,4 @@
 {
   "include": ["./test/*"],
-  "exclude": ["./rollup.config.js"]
+  "exclude": ["./rollup.config.js", "dist"]
 }
