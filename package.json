@@ -35,7 +35,7 @@
     "prepublishOnly": "npm run build",
     "types": "tsc --noEmit",
     "test": "uvu -r tsm test",
-    "mytests": "nodemon test/mytests.ts",
+    "mytests": "ts-node test/mytests.ts",
     "pretty": "prettier --write .",
     "postpretty": "npm run lint:all",
     "lint:all": "eslint . --fix"
