@@ -1,4 +1,4 @@
-import useEnv from '../src/index';
+import { useEnv } from '../src/index';
 
 useEnv('test', { debug: true });
 

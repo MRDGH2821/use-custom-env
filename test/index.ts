@@ -1,6 +1,6 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import useEnv from '../src';
+import { useEnv } from '../src';
 
 const envSuite = suite('env');
 
@@ -17,6 +17,20 @@ envSuite('should make test folder & load env', () => {
   useEnv('test');
   assert.is(process.env.TEST1, 'one');
   assert.is(process.env.TEST2, 'two');
+});
+
+envSuite('should be able to load multiline env', () => {
+  useEnv('test');
+  const multiline = `---this is a multi
+line test for use-env
+and that's it---`;
+  assert.is(process.env.TEST_MULTILINE, multiline);
+});
+
+envSuite('should be able to expand env', () => {
+  useEnv('test');
+
+  assert.is(process.env.TEST3, 'one two');
 });
 
 envSuite.run();
