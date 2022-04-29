@@ -11,8 +11,9 @@ function checkGitIgnore(
   const gitIgnorePath = pathToGitIgnore;
   const gitIgnore = fs.readFileSync(gitIgnorePath).toString(encoding);
 
-  if (!/(\.envs\/\*)|(\.envs\/)|(\.envs)/gm.test(gitIgnore)) {
-    const newGitIgnore = `${gitIgnore}\n.envs/*\n.envs\n.envs/`;
+  // const regex = new RegExp(`\\b${envFolderName}\\b`, 'gm'); // /.envs\/*\**/gm;
+  if (!gitIgnore.match('.envs')) {
+    const newGitIgnore = `${gitIgnore}\n.envs`;
 
     fs.writeFileSync(gitIgnorePath, newGitIgnore, {
       encoding,
@@ -21,7 +22,8 @@ function checkGitIgnore(
   }
 }
 
-export default function envLoader(
+// eslint-disable-next-line import/prefer-default-export
+export function useEnv(
   envNameInput = 'env',
   configOptions: UseEnvOptions = {
     debug: false,
@@ -33,7 +35,7 @@ export default function envLoader(
     updateGitIgnore: true,
   },
 ) {
-  const envName = envNameInput.split('.')[0];
+  const envName = envNameInput;
   const dotEnvOptions: DotenvConfigOptions = {
     debug: configOptions.debug,
     encoding: configOptions.encoding,
@@ -56,8 +58,8 @@ export default function envLoader(
       expand(expandOptions);
     }
   } else {
-    const envDotDirPath = `${configOptions.path}` || process.cwd();
-    const envEncoding: BufferEncoding = configOptions.encoding || 'utf8';
+    const envDotDirPath = (configOptions.path as string) || process.cwd();
+    const envEncoding: BufferEncoding = (configOptions.encoding as BufferEncoding) || 'utf8';
     const envDotFilePath = resolve(envDotDirPath, `.env.${envName}`);
 
     const envContents = fs.readFileSync(envDotFilePath, {
@@ -75,13 +77,14 @@ export default function envLoader(
     });
 
     const newConfigOptions: UseEnvOptions = {
-      encoding: envEncoding,
-      debug: configOptions.debug,
-      override: configOptions.override,
+      encoding: envEncoding || 'utf8',
+      debug: configOptions.debug || false,
+      override: configOptions.override || false,
       path: newEnvFilePath,
-      enableExpand: configOptions.enableExpand,
-      ignoreProcessEnv: configOptions.ignoreProcessEnv,
+      enableExpand: configOptions.enableExpand || true,
+      ignoreProcessEnv: configOptions.ignoreProcessEnv || false,
+      updateGitIgnore: configOptions.updateGitIgnore || true,
     };
-    envLoader('env', newConfigOptions);
+    useEnv('env', newConfigOptions);
   }
 }
