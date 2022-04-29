@@ -1,17 +1,15 @@
-import { config } from 'dotenv';
+import { config, DotenvConfigOptions } from 'dotenv';
 import { expand } from 'dotenv-expand';
-import * as fs from 'fs/promises';
+import * as fs from 'fs';
 import { resolve } from 'path';
 import { UseEnvOptions } from './interfaces/types';
 
 const defaultConfigOptions: UseEnvOptions = {
-  DotEnvOptions: {
-    debug: false,
-    encoding: 'utf8',
-    override: false,
-    path: resolve(process.cwd()),
-  },
-  EnableExpand: true,
+  debug: false,
+  encoding: 'utf8',
+  override: false,
+  path: resolve(process.cwd()),
+  enableExpand: true,
   ignoreProcessEnv: false,
 };
 
@@ -20,10 +18,16 @@ export default async function envLoader(
   configOptions = defaultConfigOptions,
 ) {
   const envName = envNameInput.split('.')[0];
+  const dotEnvOptions: DotenvConfigOptions = {
+    debug: configOptions.debug,
+    encoding: configOptions.encoding,
+    override: configOptions.override,
+    path: configOptions.path,
+  };
 
   if (envName === 'env') {
-    const envs = config(configOptions.DotEnvOptions);
-    if (configOptions.EnableExpand) {
+    const envs = config(dotEnvOptions);
+    if (configOptions.enableExpand) {
       const expandOptions = {
         ignoreProcessEnv: configOptions.ignoreProcessEnv,
         error: envs.error,
@@ -32,26 +36,23 @@ export default async function envLoader(
       expand(expandOptions);
     }
   } else {
-    const envDotDirPath = configOptions.DotEnvOptions.path || process.cwd();
-    const envEncoding = configOptions.DotEnvOptions.encoding || 'utf8';
+    const envDotDirPath = configOptions.path || process.cwd();
+    const envEncoding = configOptions.encoding || 'utf8';
     const envDotFilePath = resolve(envDotDirPath, `.env.${envName}`);
-    const envContents = await fs.readFile(envDotFilePath);
+    const envContents = fs.readFileSync(envDotFilePath);
 
     const newEnvDirPath = `${process.cwd()}\\.envs\\${envName}`;
-    await fs
-      .mkdir(newEnvDirPath)
-      .then(() => console.log(`Made directory: ${newEnvDirPath}`));
+    fs.mkdirSync(newEnvDirPath);
+
     const newEnvFilePath = `${newEnvDirPath}\\.env`;
-    await fs.writeFile(newEnvFilePath, envContents, envEncoding);
+    fs.writeFileSync(newEnvFilePath, envContents, envEncoding);
 
     const newConfigOptions: UseEnvOptions = {
-      DotEnvOptions: {
-        encoding: envEncoding,
-        debug: configOptions.DotEnvOptions.debug,
-        override: configOptions.DotEnvOptions.override,
-        path: newEnvDirPath,
-      },
-      EnableExpand: configOptions.EnableExpand,
+      encoding: envEncoding,
+      debug: configOptions.debug,
+      override: configOptions.override,
+      path: newEnvDirPath,
+      enableExpand: configOptions.enableExpand,
       ignoreProcessEnv: configOptions.ignoreProcessEnv,
     };
     await envLoader('env', newConfigOptions);

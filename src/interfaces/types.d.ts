@@ -1,7 +1,8 @@
-import { DotenvConfigOptions } from 'dotenv';
-
 export type UseEnvOptions = {
-  DotEnvOptions: DotenvConfigOptions;
+  path?: string;
+  encoding?: string;
   ignoreProcessEnv?: false;
-  EnableExpand?: true;
+  enableExpand?: true;
+  debug?: boolean;
+  override?: boolean;
 };
