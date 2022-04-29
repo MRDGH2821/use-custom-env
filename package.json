@@ -1,8 +1,11 @@
 {
   "version": "0.0.0",
-  "name": "TODO",
-  "umd:name": "TODO",
-  "repository": "TODO_USERNAME/TODO_REPO",
+  "name": "use-env",
+  "umd:name": "use-env",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MRDGH2821/use-env.git"
+  },
   "description": "TODO_MODULE_DESCRIPTION",
   "unpkg": "dist/index.min.js",
   "module": "dist/index.mjs",
@@ -10,9 +13,8 @@
   "types": "types/index.d.ts",
   "license": "MIT",
   "author": {
-    "name": "TODO_YOUR_NAME",
-    "email": "YOUR_EMAIL@TODO.com",
-    "url": "https://TODO_WEBSITE.com"
+    "name": "MRDGH2821",
+    "url": "https://bit.ly/mrdgh2821"
   },
   "files": [
     "dist",
@@ -35,17 +37,31 @@
     "test": "uvu -r tsm test"
   },
   "keywords": [
-    "TODO",
+    "env",
+    "custom",
+    "dot-env",
     "module",
     "keywords"
   ],
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "13.1.3",
-    "rollup": "2.66.1",
+    "@rollup/plugin-node-resolve": "13.2.1",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "rollup": "2.70.2",
     "rollup-plugin-terser": "7.0.2",
-    "rollup-plugin-typescript2": "0.27.1",
+    "rollup-plugin-typescript2": "0.31.2",
     "tsm": "2.2.1",
-    "typescript": "4.5.5",
+    "typescript": "4.6.4",
     "uvu": "0.5.3"
+  },
+  "bugs": {
+    "url": "https://github.com/MRDGH2821/use-env/issues"
+  },
+  "homepage": "https://github.com/MRDGH2821/use-env#readme",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "dotenv-expand": "^8.0.3"
   }
 }
