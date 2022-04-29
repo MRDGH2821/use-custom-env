@@ -1,21 +1,37 @@
 import { config, DotenvConfigOptions } from 'dotenv';
-import { expand } from 'dotenv-expand';
+import { DotenvExpandOptions, expand } from 'dotenv-expand';
 import * as fs from 'fs';
 import { resolve } from 'path';
 import { UseEnvOptions } from './interfaces/types';
 
-const defaultConfigOptions: UseEnvOptions = {
-  debug: false,
-  encoding: 'utf8',
-  override: false,
-  path: resolve(process.cwd()),
-  enableExpand: true,
-  ignoreProcessEnv: false,
-};
+function checkGitIgnore(
+  pathToGitIgnore: fs.PathLike = resolve(process.cwd(), '.gitignore'),
+  encoding: BufferEncoding = 'utf8',
+) {
+  const gitIgnorePath = pathToGitIgnore;
+  const gitIgnore = fs.readFileSync(gitIgnorePath).toString(encoding);
 
-export default async function envLoader(
+  if (!/(\.envs\/\*)|(\.envs\/)|(\.envs)/gm.test(gitIgnore)) {
+    const newGitIgnore = `${gitIgnore}\n.envs/*\n.envs\n.envs/`;
+
+    fs.writeFileSync(gitIgnorePath, newGitIgnore, {
+      encoding,
+      flag: 'w',
+    });
+  }
+}
+
+export default function envLoader(
   envNameInput = 'env',
-  configOptions = defaultConfigOptions,
+  configOptions: UseEnvOptions = {
+    debug: false,
+    encoding: 'utf8',
+    override: false,
+    path: resolve(process.cwd()),
+    enableExpand: true,
+    ignoreProcessEnv: false,
+    updateGitIgnore: true,
+  },
 ) {
   const envName = envNameInput.split('.')[0];
   const dotEnvOptions: DotenvConfigOptions = {
@@ -25,10 +41,14 @@ export default async function envLoader(
     path: configOptions.path,
   };
 
+  if (configOptions.updateGitIgnore) {
+    checkGitIgnore();
+  }
+
   if (envName === 'env') {
     const envs = config(dotEnvOptions);
     if (configOptions.enableExpand) {
-      const expandOptions = {
+      const expandOptions: DotenvExpandOptions = {
         ignoreProcessEnv: configOptions.ignoreProcessEnv,
         error: envs.error,
         parsed: envs.parsed,
@@ -36,25 +56,32 @@ export default async function envLoader(
       expand(expandOptions);
     }
   } else {
-    const envDotDirPath = configOptions.path || process.cwd();
-    const envEncoding = configOptions.encoding || 'utf8';
+    const envDotDirPath = `${configOptions.path}` || process.cwd();
+    const envEncoding: BufferEncoding = configOptions.encoding || 'utf8';
     const envDotFilePath = resolve(envDotDirPath, `.env.${envName}`);
-    const envContents = fs.readFileSync(envDotFilePath);
+
+    const envContents = fs.readFileSync(envDotFilePath, {
+      encoding: envEncoding,
+      flag: 'r',
+    });
 
     const newEnvDirPath = `${process.cwd()}\\.envs\\${envName}`;
-    fs.mkdirSync(newEnvDirPath);
+    fs.mkdirSync(newEnvDirPath, { recursive: true });
 
     const newEnvFilePath = `${newEnvDirPath}\\.env`;
-    fs.writeFileSync(newEnvFilePath, envContents, envEncoding);
+    fs.writeFileSync(newEnvFilePath, envContents, {
+      encoding: envEncoding,
+      flag: 'w',
+    });
 
     const newConfigOptions: UseEnvOptions = {
       encoding: envEncoding,
       debug: configOptions.debug,
       override: configOptions.override,
-      path: newEnvDirPath,
+      path: newEnvFilePath,
       enableExpand: configOptions.enableExpand,
       ignoreProcessEnv: configOptions.ignoreProcessEnv,
     };
-    await envLoader('env', newConfigOptions);
+    envLoader('env', newConfigOptions);
   }
 }
