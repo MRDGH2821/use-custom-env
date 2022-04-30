@@ -11,8 +11,10 @@ function checkGitIgnore(
   const gitIgnorePath = pathToGitIgnore;
   const gitIgnore = fs.readFileSync(gitIgnorePath).toString(encoding);
 
+  const isIgnored = gitIgnore.match('.envs');
+
   // const regex = new RegExp(`\\b${envFolderName}\\b`, 'gm'); // /.envs\/*\**/gm;
-  if (!gitIgnore.match('.envs')) {
+  if (isIgnored?.length === 0 || isIgnored === undefined || isIgnored === null) {
     const newGitIgnore = `${gitIgnore}\n.envs`;
 
     fs.writeFileSync(gitIgnorePath, newGitIgnore, {
@@ -24,30 +26,25 @@ function checkGitIgnore(
 
 // eslint-disable-next-line import/prefer-default-export
 export function useEnv(
-  envNameInput = 'env',
   configOptions: UseEnvOptions = {
-    debug: false,
-    encoding: 'utf8',
-    override: false,
-    path: resolve(process.cwd()),
     enableExpand: true,
     ignoreProcessEnv: false,
     updateGitIgnore: true,
   },
 ) {
-  const envName = envNameInput;
+  const envName = configOptions.envNameInput;
   const dotEnvOptions: DotenvConfigOptions = {
     debug: configOptions.debug,
     encoding: configOptions.encoding,
     override: configOptions.override,
-    path: configOptions.path,
+    path: resolve((configOptions.path as string) || process.cwd()),
   };
-
+  console.log(dotEnvOptions, configOptions);
   if (configOptions.updateGitIgnore) {
     checkGitIgnore();
   }
 
-  if (envName === 'env') {
+  if (envName === 'env' || envName === null || envName === undefined) {
     const envs = config(dotEnvOptions);
     if (configOptions.enableExpand) {
       const expandOptions: DotenvExpandOptions = {
@@ -85,6 +82,58 @@ export function useEnv(
       ignoreProcessEnv: configOptions.ignoreProcessEnv || false,
       updateGitIgnore: configOptions.updateGitIgnore || true,
     };
-    useEnv('env', newConfigOptions);
+    useEnv(newConfigOptions);
+  }
+}
+
+function loadEnv(path: fs.PathLike, expandEnv: boolean) {
+  const envs = config({
+    path: resolve(path as string, '.env'),
+  });
+
+  if (expandEnv) {
+    expand(envs);
+  }
+}
+
+export function useEnvAdv(
+  configOptions: UseEnvOptions = {
+    enableExpand: true,
+    ignoreProcessEnv: false,
+    updateGitIgnore: true,
+  },
+) {
+  const envName = configOptions.envNameInput;
+  const folderPath = (configOptions.path as fs.PathLike) || process.cwd();
+  const files = fs.readdirSync(folderPath);
+  const matched = files.filter((fileName) => {
+    let matches;
+    if (envName) {
+      matches = fileName.match(`.env.${envName}`);
+    } else {
+      matches = fileName.match(/^.env$/gmu);
+    }
+    return matches;
+  });
+  console.log(matched);
+  if (
+    configOptions.envNameInput === 'env'
+    || configOptions.envNameInput === undefined
+    || configOptions.envNameInput === null
+  ) {
+    const envResult = config({
+      debug: configOptions.debug,
+      encoding: configOptions.encoding,
+      override: configOptions.override,
+      path: configOptions.path,
+    });
+
+    if (configOptions.enableExpand) {
+      expand({
+        error: envResult.error,
+        ignoreProcessEnv: configOptions.ignoreProcessEnv,
+        parsed: envResult.parsed,
+      });
+    }
   }
 }
