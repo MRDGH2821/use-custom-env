@@ -52,6 +52,15 @@ envSuite('should throw error when no input given & no .env file found', () => {
   writeFileSync(filePath, 'DEFAULT = working in default options mode');
 });
 
+envSuite('should load on named parameters & expand multiline env', () => {
+  console.log('||---Load on named params & expand multiline env-----------');
+  useEnv((envName = 'named'), (override = false));
+  const multiline = `this is multiline
+with expansion
+expansions are first fill , second fill`;
+  assert.is(process.env.TEST_MULTILINE_2, multiline);
+});
+
 envSuite.run();
 
 // ---
