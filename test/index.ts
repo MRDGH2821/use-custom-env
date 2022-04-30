@@ -35,7 +35,7 @@ envSuite('should be able to expand env', () => {
   console.log('||---Env Expand-----------');
   useEnv('expand');
 
-  assert.is(process.env.TEST3, 'one two');
+  assert.is(process.env.TEST6, 'one two');
 });
 
 envSuite.run();
