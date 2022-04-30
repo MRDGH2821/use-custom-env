@@ -4,7 +4,7 @@
   "umd:name": "use-env",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MRDGH2821/use-env.git"
+    "url": "git+https://github.com/MRDGH2821/use-custom-env.git"
   },
   "description": "Use any given env file in your Node.js project!",
   "unpkg": "dist/index.min.js",
@@ -62,9 +62,9 @@
     "uvu": "0.5.3"
   },
   "bugs": {
-    "url": "https://github.com/MRDGH2821/use-env/issues"
+    "url": "https://github.com/MRDGH2821/use-custom-env/issues"
   },
-  "homepage": "https://github.com/MRDGH2821/use-env#readme",
+  "homepage": "https://github.com/MRDGH2821/use-custom-env#readme",
   "directories": {
     "test": "test"
   },

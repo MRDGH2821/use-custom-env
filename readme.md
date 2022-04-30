@@ -30,7 +30,7 @@ I have bunch of files which match the regex - `\.env.*\`
 But [dotenv](https://www.npmjs.com/package/dotenv) has limitation. It can only load from `.env` not from `.env.thing` or `.env.local`
 [custom-env](https://www.npmjs.com/package/custom-env) exists, but there are no typescript typings
 
-Thus `use-env` was born, which facilitates loading custom env files.
+Thus `use-custom-env` was born, which facilitates loading custom env files.
 
 # Licence
 
