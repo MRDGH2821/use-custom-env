@@ -2,18 +2,17 @@
 
 Use any given env file in your Node.js project!
 
-## Motivation
+## Installation
 
-I have bunch of files which match the regex - `\.env.*\`
-But [dotenv](https://www.npmjs.com/package/dotenv) has limitation. It can only load from `.env` not from `.env.thing` or `.env.local`
-[custom-env](https://www.npmjs.com/package/custom-env) exists, but there are no typescript typings
-
-Thus `use-env` was born, which facilitates loading custom env files.
+```sh
+npm install use-custom-env
+```
 
 ## Usage
 
 ```js
-const { useEnv } = require('use-custom-env');
+const { useCustomEnv } = require('use-custom-env'); // for CJS style
+import { useCustomEnv } from 'use-custom-env'; // for ESM or TS
 
 // for `.env`
 useCustomEnv();
@@ -24,6 +23,14 @@ useCustomEnv('beta');
 // for `.env.prod` and to override existing variables
 useCustomEnv((envName = 'prod'), (override = true));
 ```
+
+## Motivation
+
+I have bunch of files which match the regex - `\.env.*\`
+But [dotenv](https://www.npmjs.com/package/dotenv) has limitation. It can only load from `.env` not from `.env.thing` or `.env.local`
+[custom-env](https://www.npmjs.com/package/custom-env) exists, but there are no typescript typings
+
+Thus `use-env` was born, which facilitates loading custom env files.
 
 # Licence
 
