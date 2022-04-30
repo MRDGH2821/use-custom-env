@@ -1,7 +1,12 @@
-import { useEnv, useEnvAdv } from '../src/index';
+/* eslint-disable no-console */
+import { useEnv } from '../src/index';
 
-useEnv({ envNameInput: 'test', debug: true });
+useEnv('test', true);
 
 console.log(process.env.TEST1);
 
-useEnvAdv({ envNameInput: 'test' });
+useEnv();
+
+console.log(process.env.DEFAULT);
+
+// useEnv('dofifj');
