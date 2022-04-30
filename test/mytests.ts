@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
-import { useEnv } from '../src/index';
+import { useCustomEnv } from '../src/index';
 
-useEnv('test', true);
+useCustomEnv('test', true);
 
 console.log(process.env.TEST1);
 
-useEnv();
+useCustomEnv();
 
 console.log(process.env.DEFAULT);
 

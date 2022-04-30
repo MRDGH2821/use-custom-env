@@ -31,7 +31,7 @@ function injectEnv(obj: DotenvParseOutput, override: boolean = false) {
  * If you have `.env.scaling` then use `useEnv('scaling')`
  * If you simply want to load `.env` then leave it blank i.e. `useEnv()`
  */
-export function useEnv(envName?: string, override: boolean = false) {
+export function useCustomEnv(envName?: string, override: boolean = false) {
   try {
     let envFilePath = envName || '.env';
     if (envName === undefined || envName === null) {

@@ -1,4 +1,4 @@
-# use-env
+# use-custom-env
 
 Use any given env file in your Node.js project!
 
@@ -13,16 +13,16 @@ Thus `use-env` was born, which facilitates loading custom env files.
 ## Usage
 
 ```js
-const { useEnv } = require('use-env');
+const { useEnv } = require('use-custom-env');
 
 // for `.env`
-useEnv();
+useCustomEnv();
 
 // for `.env.beta`
-useEnv('beta');
+useCustomEnv('beta');
 
 // for `.env.prod` and to override existing variables
-useEnv((envName = 'prod'), (override = true));
+useCustomEnv((envName = 'prod'), (override = true));
 ```
 
 # Licence
