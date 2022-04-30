@@ -1,139 +1,56 @@
-import { config, DotenvConfigOptions } from 'dotenv';
-import { DotenvExpandOptions, expand } from 'dotenv-expand';
-import * as fs from 'fs';
+/* eslint-disable import/prefer-default-export */
+import { DotenvParseOutput, parse } from 'dotenv';
+import { expand } from 'dotenv-expand';
+import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { UseEnvOptions } from './interfaces/types';
 
-function checkGitIgnore(
-  pathToGitIgnore: fs.PathLike = resolve(process.cwd(), '.gitignore'),
-  encoding: BufferEncoding = 'utf8',
-) {
-  const gitIgnorePath = pathToGitIgnore;
-  const gitIgnore = fs.readFileSync(gitIgnorePath).toString(encoding);
-
-  const isIgnored = gitIgnore.match('.envs');
-
-  // const regex = new RegExp(`\\b${envFolderName}\\b`, 'gm'); // /.envs\/*\**/gm;
-  if (isIgnored?.length === 0 || isIgnored === undefined || isIgnored === null) {
-    const newGitIgnore = `${gitIgnore}\n.envs`;
-
-    fs.writeFileSync(gitIgnorePath, newGitIgnore, {
-      encoding,
-      flag: 'w',
-    });
-  }
-}
-
-// eslint-disable-next-line import/prefer-default-export
-export function useEnv(
-  configOptions: UseEnvOptions = {
-    enableExpand: true,
-    ignoreProcessEnv: false,
-    updateGitIgnore: true,
-  },
-) {
-  const envName = configOptions.envNameInput;
-  const dotEnvOptions: DotenvConfigOptions = {
-    debug: configOptions.debug,
-    encoding: configOptions.encoding,
-    override: configOptions.override,
-    path: resolve((configOptions.path as string) || process.cwd()),
-  };
-  console.log(dotEnvOptions, configOptions);
-  if (configOptions.updateGitIgnore) {
-    checkGitIgnore();
-  }
-
-  if (envName === 'env' || envName === null || envName === undefined) {
-    const envs = config(dotEnvOptions);
-    if (configOptions.enableExpand) {
-      const expandOptions: DotenvExpandOptions = {
-        ignoreProcessEnv: configOptions.ignoreProcessEnv,
-        error: envs.error,
-        parsed: envs.parsed,
-      };
-      expand(expandOptions);
+/**
+ * Injects the parser output into process.env
+ * @function injectEnv
+ * @param {DotenvParseOutput} obj - The output from dot-env parser
+ * @param {boolean} override - Default False. Override existing environment variables
+ */
+function injectEnv(obj: DotenvParseOutput, override: boolean = false) {
+  Object.keys(obj).forEach((key) => {
+    if (!Object.prototype.hasOwnProperty.call(process.env, key)) {
+      process.env[key] = obj[key];
+    } else if (override) {
+      process.env[key] = obj[key];
     }
-  } else {
-    const envDotDirPath = (configOptions.path as string) || process.cwd();
-    const envEncoding: BufferEncoding = (configOptions.encoding as BufferEncoding) || 'utf8';
-    const envDotFilePath = resolve(envDotDirPath, `.env.${envName}`);
-
-    const envContents = fs.readFileSync(envDotFilePath, {
-      encoding: envEncoding,
-      flag: 'r',
-    });
-
-    const newEnvDirPath = `${process.cwd()}\\.envs\\${envName}`;
-    fs.mkdirSync(newEnvDirPath, { recursive: true });
-
-    const newEnvFilePath = `${newEnvDirPath}\\.env`;
-    fs.writeFileSync(newEnvFilePath, envContents, {
-      encoding: envEncoding,
-      flag: 'w',
-    });
-
-    const newConfigOptions: UseEnvOptions = {
-      encoding: envEncoding || 'utf8',
-      debug: configOptions.debug || false,
-      override: configOptions.override || false,
-      path: newEnvFilePath,
-      enableExpand: configOptions.enableExpand || true,
-      ignoreProcessEnv: configOptions.ignoreProcessEnv || false,
-      updateGitIgnore: configOptions.updateGitIgnore || true,
-    };
-    useEnv(newConfigOptions);
-  }
-}
-
-function loadEnv(path: fs.PathLike, expandEnv: boolean) {
-  const envs = config({
-    path: resolve(path as string, '.env'),
   });
-
-  if (expandEnv) {
-    expand(envs);
-  }
+  expand({ parsed: obj });
 }
 
-export function useEnvAdv(
-  configOptions: UseEnvOptions = {
-    enableExpand: true,
-    ignoreProcessEnv: false,
-    updateGitIgnore: true,
-  },
-) {
-  const envName = configOptions.envNameInput;
-  const folderPath = (configOptions.path as fs.PathLike) || process.cwd();
-  const files = fs.readdirSync(folderPath);
-  const matched = files.filter((fileName) => {
-    let matches;
-    if (envName) {
-      matches = fileName.match(`.env.${envName}`);
+/**
+ * Loads custom `.env.*` files from root folder
+ * @function useEnv
+ * @param {string} envName - Environment name or the Env file extension to be loaded
+ * @param {boolean} override - Default False. Override existing environment variables
+ *
+ * @example
+ * If you have `.env.scaling` then use `useEnv('scaling')`
+ * If you simply want to load `.env` then leave it blank i.e. `useEnv()`
+ */
+export function useEnv(envName?: string, override: boolean = false) {
+  try {
+    let envFilePath = envName || '.env';
+    if (envName === undefined || envName === null) {
+      envFilePath = resolve(process.cwd(), '.env');
     } else {
-      matches = fileName.match(/^.env$/gmu);
+      envFilePath = resolve(process.cwd(), `.env.${envName}`);
     }
-    return matches;
-  });
-  console.log(matched);
-  if (
-    configOptions.envNameInput === 'env'
-    || configOptions.envNameInput === undefined
-    || configOptions.envNameInput === null
-  ) {
-    const envResult = config({
-      debug: configOptions.debug,
-      encoding: configOptions.encoding,
-      override: configOptions.override,
-      path: configOptions.path,
-    });
-
-    if (configOptions.enableExpand) {
-      expand({
-        error: envResult.error,
-        ignoreProcessEnv: configOptions.ignoreProcessEnv,
-        parsed: envResult.parsed,
-      });
+    const parsed = parse(readFileSync(envFilePath));
+    injectEnv(parsed, override);
+    // console.log(`Successfully loaded ${envFilePath}\n`);
+  } catch (error) {
+    if (envName) {
+      throw new Error(
+        `Cannot load ".env.${envName}"\nMake sure the file is in the Root of the folder "${process.cwd()}\\"\n${error}`,
+      );
+    } else {
+      throw new Error(
+        `Cannot load ".env"\nMake sure the file is in the Root of the folder "${process.cwd()}\\"\n${error}`,
+      );
     }
   }
 }
