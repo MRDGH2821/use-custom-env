@@ -19,4 +19,16 @@ export interface UseEnvOptions extends DotenvConfigOptions, DotenvExpandOptions 
    * Change this option only if you really really know what you are doing.
    */
   updateGitIgnore?: boolean;
+
+  /**
+   * Default: `env`
+   *
+   * Specify the environment name.
+   * For `.env.prod` it would be `prod`.
+   * For `.env.dev` it will be `dev`
+   * For `.env` it will be the default -> `env`
+   *
+   */
+
+  envNameInput?: string;
 }

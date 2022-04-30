@@ -17,14 +17,14 @@ envSuite('should default to env when no input given', () => {
 
 envSuite('should make test folder & load env', () => {
   console.log('||---Load env from test folder-----------');
-  useEnv('test');
+  useEnv({ envNameInput: 'test' });
   assert.is(process.env.TEST1, 'one');
   assert.is(process.env.TEST2, 'two');
 });
 
 envSuite('should be able to load multiline env', () => {
   console.log('||---Multiline load-----------');
-  useEnv('multiline');
+  useEnv({ envNameInput: 'multiline' });
   const multiline = `---this is a multi
 line test for use-env
 and that's it---`;
@@ -33,7 +33,7 @@ and that's it---`;
 
 envSuite('should be able to expand env', () => {
   console.log('||---Env Expand-----------');
-  useEnv('expand');
+  useEnv({ envNameInput: 'expand' });
 
   assert.is(process.env.TEST6, 'one two');
 });
