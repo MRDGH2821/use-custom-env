@@ -24,24 +24,30 @@ function injectEnv(obj: DotenvParseOutput, override: boolean = false) {
 }
 
 /**
- * Loads custom `.env.*` files from root folder
- * @function useEnv
- * @param {string} envName - Environment name or the Env file extension to be loaded
+ * Loads custom `.env.*` file from root folder
+ * @function useCustomEnv
+ * @param {string} envName - Environment name or the env file extension to be loaded
  * @param {boolean} override - Default False. Override existing environment variables
+ * @param {BufferEncoding} encoding - Default `utf-8`. File encoding of the env file
  *
  * @example
  * If you have `.env.scaling` then use `useEnv('scaling')`
- * If you simply want to load `.env` then leave it blank i.e. `useEnv()`
+ * If you simply want to load `.env` then leave it blank i.e. `useCustomEnv()`
  */
-export function useCustomEnv(envName?: string, override: boolean = false) {
+export function useCustomEnv(
+  envName?: string,
+  override: boolean = false,
+  encoding: BufferEncoding = 'utf-8',
+) {
   try {
-    let envFilePath = envName || '.env';
-    if (envName === undefined || envName === null) {
-      envFilePath = resolve(process.cwd(), '.env');
-    } else {
-      envFilePath = resolve(process.cwd(), `.env.${envName}`);
-    }
-    const parsed = parse(readFileSync(envFilePath));
+    const envFilePath = envName
+      ? resolve(process.cwd(), `.env.${envName}`)
+      : resolve(process.cwd(), '.env');
+    const parsed = parse(
+      readFileSync(envFilePath, {
+        encoding,
+      }),
+    );
     injectEnv(parsed, override);
     // console.log(`Successfully loaded ${envFilePath}\n`);
   } catch (error) {
