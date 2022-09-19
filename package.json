@@ -37,8 +37,9 @@
     "test": "uvu -r tsm test",
     "mytests": "ts-node test/mytests.ts",
     "pretty": "prettier --write .",
-    "postpretty": "npm run lint:all",
-    "lint:all": "eslint . --fix"
+    "postpretty": "npm run lint",
+    "lint": "eslint . --fix",
+    "megalint": "npx mega-linter-runner --flavor javascript"
   },
   "keywords": [
     "env",
