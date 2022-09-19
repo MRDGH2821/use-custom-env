@@ -16,7 +16,8 @@
     "moduleResolution": "node",
     "strictNullChecks": true,
     "noImplicitAny": true,
-    "strict": true
+    "strict": true,
+    "removeComments": true
   },
   "include": ["@types/**/*", "src/**/*"],
   "exclude": ["node_modules", "test", "dist"]
