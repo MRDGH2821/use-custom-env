@@ -2,7 +2,7 @@ import { config as config_1, DotenvParseOutput, parse } from 'dotenv';
 import { expand } from 'dotenv-expand';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { DotenvConfigOptionsStrict } from './typings/interfaces';
+import { DotenvConfigOptionsStrict, UseAdvancedEnvOptions } from './typings/interfaces';
 
 export { parse } from 'dotenv';
 export { expand } from 'dotenv-expand';
@@ -73,4 +73,27 @@ export function useCustomEnv(
  */
 export function config(options: DotenvConfigOptionsStrict) {
   return config_1(options);
+}
+
+/**
+ * Loads custom `.env.*` file as long as path to file is valid
+ * @function useEnv
+ * @param {UseAdvancedEnvOptions} options - options for useAdvancedEnv
+ * @example
+ * If your env file is at `./some folder/.env.test`, put it as it is,
+ * i.e `useAdvancedEnv({ pathToEnvFile: './some folder/.env.test' })`
+ * */
+export function useAdvancedEnv(options: UseAdvancedEnvOptions) {
+  try {
+    const envFilePath = resolve(options.pathToEnvFile);
+    const parsed = parse(
+      readFileSync(envFilePath, {
+        encoding: options.encoding,
+      }),
+    );
+
+    injectEnv(parsed, options.override);
+  } catch (error) {
+    throw new Error(`Cannot load the following file: \n\n${options.pathToEnvFile}\n\n${error}`);
+  }
 }

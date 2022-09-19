@@ -36,3 +36,25 @@ export interface DotenvConfigOptionsStrict {
   override?: boolean;
 }
 
+export interface UseAdvancedEnvOptions {
+  /**
+   * Specify full path to the env file
+   * @example
+   * If your env file is at `./some folder/.env.test`, put it as it is,
+   * i.e `useAdvancedEnv({ pathToEnvFile: './some folder/.env.test' })
+   */
+  pathToEnvFile: string;
+
+  /**
+   * Default: `false`
+   *
+   * Specify the encoding of your file containing environment variables.
+   */
+  encoding?: BufferEncoding;
+  /**
+   * Default: `false`
+   *
+   * Override existing environment variables with values from your .env file.
+   */
+  override?: boolean;
+}
