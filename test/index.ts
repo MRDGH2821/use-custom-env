@@ -39,8 +39,8 @@ envSuite('should be able to expand env', () => {
   assert.is(process.env.TEST6, 'one two');
 });
 
-envSuite('should throw error on non existant environment file input', () => {
-  console.log('||---Throw on non existant env name input-----------');
+envSuite('should throw error on non existent environment file input', () => {
+  console.log('||---Throw on non existent env name input-----------');
   assert.throws(() => useCustomEnv('aNonExistantEnvName'));
 });
 
