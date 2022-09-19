@@ -1,8 +1,8 @@
-/* eslint-disable import/prefer-default-export */
-import { DotenvParseOutput, parse } from 'dotenv';
+import { config as config_1, DotenvParseOutput, parse } from 'dotenv';
 import { expand } from 'dotenv-expand';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+import { DotenvConfigOptionsStrict } from './typings/interfaces';
 
 /**
  * Injects the parser output into process.env
@@ -53,4 +53,16 @@ export function useCustomEnv(envName?: string, override: boolean = false) {
       );
     }
   }
+}
+
+/**
+ * Loads `.env` file contents into process.env.
+ *
+ * See https://docs.dotenv.org
+ *
+ * @param {DotenvConfigOptionsStrict} options - additional options.
+ * @returns an object with a `parsed` key if successful or `error` key if an error occurred.
+ */
+export function config(options: DotenvConfigOptionsStrict) {
+  return config_1(options);
 }
