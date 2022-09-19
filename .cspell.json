@@ -11,6 +11,25 @@
   ],
   "language": "en",
   "noConfigSearch": true,
-  "words": ["megalinter", "oxsecurity"],
-  "version": "0.2"
+  "version": "0.2",
+  "words": [
+    "CODECOV",
+    "Existant",
+    "Licence",
+    "MRDGH",
+    "commitlint",
+    "dedupe",
+    "dofifj",
+    "ggshield",
+    "lcov",
+    "megalint",
+    "megalinter",
+    "mrdgh",
+    "mytests",
+    "oxsecurity",
+    "postpretty",
+    "rollup",
+    "stefanzweifel",
+    "venv"
+  ]
 }
