@@ -4,6 +4,8 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { DotenvConfigOptionsStrict } from './typings/interfaces';
 
+export { parse } from 'dotenv';
+export { expand } from 'dotenv-expand';
 /**
  * Injects the parser output into process.env
  * @function injectEnv
