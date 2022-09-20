@@ -21,7 +21,9 @@ LINTER_RULES_PATH: .
 PRINT_ALPACA: false
 
 PRE_COMMANDS:
-  - command: 'npm ci && npm i prettier-config-mrdgh2821 eslint-config-airbnb-typescript'
+  - command: 'npm ci'
+    cwd: 'workspace'
+  - command: 'npm i prettier-config-mrdgh2821 eslint-config-airbnb-typescript'
     cwd: 'workspace'
 POST_COMMANDS:
   - command: 'npm run pretty'
