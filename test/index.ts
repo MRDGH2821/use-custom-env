@@ -3,7 +3,7 @@ import { unlinkSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import { useCustomEnv } from '../src';
+import { useAdvancedEnv, useCustomEnv } from '../src';
 
 const UCESuite = suite('use-custom-env');
 
@@ -64,3 +64,20 @@ expansions are first fill , second fill`;
 UCESuite.run();
 
 // ---
+
+const UAESuite = suite('use-advanced-env');
+
+UAESuite('should load custom env from root dir', () => {
+  console.log('||---Load custom env from root dir-----------');
+  useAdvancedEnv({ pathToEnvFile: '.env.test', override: true });
+  assert.is(process.env.TEST1, 'one');
+  assert.is(process.env.TEST2, 'two');
+});
+
+UAESuite('should load default env from root dir', () => {
+  console.log('||---Load default env from root dir-----------');
+  useAdvancedEnv({ pathToEnvFile: '.env', override: true });
+  assert.is(process.env.DEFAULT, 'working in default options mode');
+});
+
+UAESuite.run();
