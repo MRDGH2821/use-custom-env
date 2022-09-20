@@ -49,7 +49,7 @@ UCESuite('should throw error when no input given & no .env file found', () => {
   unlinkSync(filePath);
   console.log('||---Throw on no input && no .env-----------');
   assert.throws(() => useCustomEnv('aNonExistantEnvName'));
-  writeFileSync(filePath, 'DEFAULT = working in default options mode');
+  writeFileSync(filePath, 'DEFAULT = working in default options mode\n');
 });
 
 UCESuite('should load on named parameters & expand multiline env', () => {
