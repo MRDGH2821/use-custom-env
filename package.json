@@ -39,7 +39,7 @@
     "pretty": "prettier --write .",
     "postpretty": "npm run lint",
     "lint": "eslint . --fix",
-    "megalint": "npx mega-linter-runner --flavor javascript"
+    "megalint": "npx mega-linter-runner@latest --flavor javascript"
   },
   "keywords": [
     "env",
