@@ -80,4 +80,28 @@ UAESuite('should load default env from root dir', () => {
   assert.is(process.env.DEFAULT, 'working in default options mode');
 });
 
+UAESuite('should load default env from custom dir', () => {
+  console.log('||---Load default env from custom dir-----------');
+  useAdvancedEnv({ pathToEnvFile: '../test-dir/.env', override: true });
+  assert.is(process.env.TEST_DIR, 'true');
+});
+
+UAESuite('should load custom env from custom dir', () => {
+  console.log('||---Load custom env from custom dir-----------');
+  useAdvancedEnv({ pathToEnvFile: '../test-dir/.env.dir', override: true });
+  assert.is(process.env.CUSTOM_DIR_ENV, 'true');
+});
+
+UAESuite('should load default env from nested custom dir', () => {
+  console.log('||---Load default env from nested custom dir-----------');
+  useAdvancedEnv({ pathToEnvFile: '../test-dir/nested-test-dir/.env', override: true });
+  assert.is(process.env.NESTED_TEST_DIR, 'true');
+});
+
+UAESuite('should load custom env from nested custom dir', () => {
+  console.log('||---Load custom env from nested custom dir-----------');
+  useAdvancedEnv({ pathToEnvFile: '../test-dir/nested-test-dir/.env.nested', override: true });
+  assert.is(process.env.CUSTOM_NESTED, 'true');
+});
+
 UAESuite.run();
