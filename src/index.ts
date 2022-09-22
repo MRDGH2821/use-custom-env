@@ -39,10 +39,9 @@ export function useCustomEnv(
   override: boolean = false,
   encoding: BufferEncoding = 'utf-8',
 ) {
+  const envFile = envName ? `.env.${envName}` : '.env';
   try {
-    const envFilePath = envName
-      ? resolve(process.cwd(), `.env.${envName}`)
-      : resolve(process.cwd(), '.env');
+    const envFilePath = resolve(process.cwd(), envFile);
     const parsed = parse(
       readFileSync(envFilePath, {
         encoding,
@@ -51,15 +50,9 @@ export function useCustomEnv(
     injectEnv(parsed, override);
     // console.log(`Successfully loaded ${envFilePath}\n`);
   } catch (error) {
-    if (envName) {
-      throw new Error(
-        `Cannot load ".env.${envName}"\nMake sure the file is in the Root of the folder "${process.cwd()}\\"\n${error}`,
-      );
-    } else {
-      throw new Error(
-        `Cannot load ".env"\nMake sure the file is in the Root of the folder "${process.cwd()}\\"\n${error}`,
-      );
-    }
+    throw new Error(
+      `Cannot load "${envFile}"\nMake sure the file is in the Root of the folder "${process.cwd()}\\"\n${error}`,
+    );
   }
 }
 
