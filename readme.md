@@ -21,7 +21,7 @@ useCustomEnv();
 useCustomEnv('beta');
 
 // for `.env.prod` and to override existing variables
-useCustomEnv((envName = 'prod'), (override = true));
+useCustomEnv('prod', true);
 ```
 
 ## Motivation
